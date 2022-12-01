@@ -3,36 +3,49 @@ extern crate utils;
 use utils::Day;
 
 pub struct Day1 {
-    input: Vec<u32>,
+    input: Vec<Vec<u32>>,
 }
 
 impl Day1 {
     pub fn new(input: String) -> Day1 {
-        let input = input
-            .lines()
-            .map(|line| line.trim().parse::<u32>().unwrap())
-            .collect();
+        let input = input.lines().fold(vec![vec![]], |mut acc, line| {
+            let trimmed_line = line.trim();
+            if trimmed_line.is_empty() {
+                acc.push(vec![]);
+            } else {
+                acc.last_mut()
+                    .unwrap()
+                    .push(trimmed_line.parse::<u32>().unwrap());
+            }
+            acc
+        });
+
         Day1 { input }
     }
 
-    fn get_window_fold(&self, vec: &Vec<u32>) -> u32 {
-        vec.windows(2).fold(0, |acc, x| {
-            if x[0] < x[1] {
-                return acc + 1;
-            };
-            return acc;
-        })
+    fn get_invertory_list_in_descending_content_size_order(&self) -> Vec<Vec<u32>> {
+        let mut inventory = self.input.clone();
+        inventory.sort_by_key(|x| x.iter().sum::<u32>());
+        inventory.reverse();
+        return inventory;
     }
 }
 
 impl Day for Day1 {
     fn get_part_a_result(&self) -> String {
-        let result = self.get_window_fold(self.input.as_ref());
+        let result: u32 = self
+            .get_invertory_list_in_descending_content_size_order()
+            .first()
+            .unwrap()
+            .iter()
+            .sum();
         String::from(result.to_string())
     }
     fn get_part_b_result(&self) -> String {
-        let windows_summed = self.input.windows(3).map(|x| x.iter().sum()).collect::<Vec<u32>>();
-        let result = self.get_window_fold(windows_summed.as_ref());
+        let result: u32 = self.get_invertory_list_in_descending_content_size_order()[..3]
+            .iter()
+            .fold(0, |acc, x| acc + x.iter().sum::<u32>());
+
         String::from(result.to_string())
     }
 }
@@ -42,22 +55,28 @@ mod tests {
     use super::*;
 
     fn get_input() -> String {
-        String::from("199
-        200
-        208
-        210
-        200
-        207
-        240
-        269
-        260
-        263")
+        String::from(
+            "1000
+        2000
+        3000
+        
+        4000
+        
+        5000
+        6000
+        
+        7000
+        8000
+        9000
+        
+        10000",
+        )
     }
 
     #[test]
     fn example1() {
         let solver = Day1::new(get_input());
-        let result = "7";
+        let result = "24000";
 
         let answer = solver.get_part_a_result();
 
@@ -67,7 +86,7 @@ mod tests {
     #[test]
     fn example2() {
         let solver = Day1::new(get_input());
-        let result = "5";
+        let result = "45000";
 
         let answer = solver.get_part_b_result();
 
