@@ -1,18 +1,18 @@
 extern crate utils;
 
-use utils::Day;
+use utils::ChallengeSolver;
 
-pub struct DayNUM {
+pub struct Solver {
 }
 
-impl DayNUM {
-    pub fn new(input: String) -> DayNUM {
+impl Solver {
+    pub fn new(input: String) -> Solver {
         let input = input;
-        DayNUM { }
+        Solver { }
     }
 }
 
-impl Day for DayNUM {
+impl ChallengeSolver for Solver {
     fn get_part_a_result(&self) -> String {
         let result = "IMPLEMENT ME";
         String::from(result.to_string())
@@ -33,7 +33,7 @@ mod tests {
 
     #[test]
     fn example1() {
-        let solver = DayNUM::new(get_input());
+        let solver = Solver::new(get_input());
         let result = "";
 
         let answer = solver.get_part_a_result();
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn example2() {
-        let solver = DayNUM::new(get_input());
+        let solver = Solver::new(get_input());
         let result = "";
 
         let answer = solver.get_part_b_result();

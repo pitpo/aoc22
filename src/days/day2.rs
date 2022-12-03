@@ -1,13 +1,13 @@
 extern crate utils;
 
-use utils::Day;
+use utils::ChallengeSolver;
 
-pub struct Day2 {
+pub struct Solver {
     input: Vec<(i16, i16)>
 }
 
-impl Day2 {
-    pub fn new(input: String) -> Day2 {
+impl Solver {
+    pub fn new(input: String) -> Solver {
         let input: Vec<(i16, i16)> = input
             .lines()
             .map(|line| {
@@ -18,11 +18,11 @@ impl Day2 {
                 );
             })
             .collect::<Vec<(i16, i16)>>();
-        Day2 { input }
+        Solver { input }
     }
 }
 
-impl Day for Day2 {
+impl ChallengeSolver for Solver {
     fn get_part_a_result(&self) -> String {
         let result = self.input.iter().fold(0, |mut acc, (x, y)| {
             acc += y;
@@ -68,7 +68,7 @@ mod tests {
 
     #[test]
     fn example1() {
-        let solver = Day2::new(get_input());
+        let solver = Solver::new(get_input());
         let result = "15";
 
         let answer = solver.get_part_a_result();
@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn example2() {
-        let solver = Day2::new(get_input());
+        let solver = Solver::new(get_input());
         let result = "12";
 
         let answer = solver.get_part_b_result();
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn euclidean_modulo_test() {
-        let solver = Day2::new(String::from("A Y"));
+        let solver = Solver::new(String::from("A Y"));
         let result = "8";
 
         let answer = solver.get_part_a_result();

@@ -1,13 +1,13 @@
 extern crate utils;
 
-use utils::Day;
+use utils::ChallengeSolver;
 
-pub struct Day1 {
+pub struct Solver {
     input: Vec<Vec<u32>>,
 }
 
-impl Day1 {
-    pub fn new(input: String) -> Day1 {
+impl Solver {
+    pub fn new(input: String) -> Solver {
         let input = input.lines().fold(vec![vec![]], |mut acc, line| {
             let trimmed_line = line.trim();
             if trimmed_line.is_empty() {
@@ -20,7 +20,7 @@ impl Day1 {
             acc
         });
 
-        Day1 { input }
+        Solver { input }
     }
 
     fn get_invertory_list_in_descending_content_size_order(&self) -> Vec<Vec<u32>> {
@@ -31,7 +31,7 @@ impl Day1 {
     }
 }
 
-impl Day for Day1 {
+impl ChallengeSolver for Solver {
     fn get_part_a_result(&self) -> String {
         let result: u32 = self
             .get_invertory_list_in_descending_content_size_order()
@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn example1() {
-        let solver = Day1::new(get_input());
+        let solver = Solver::new(get_input());
         let result = "24000";
 
         let answer = solver.get_part_a_result();
@@ -85,7 +85,7 @@ mod tests {
 
     #[test]
     fn example2() {
-        let solver = Day1::new(get_input());
+        let solver = Solver::new(get_input());
         let result = "45000";
 
         let answer = solver.get_part_b_result();

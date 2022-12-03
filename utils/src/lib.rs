@@ -3,7 +3,7 @@ extern crate reqwest;
 pub mod day;
 pub mod network;
 
-pub use day::Day;
+pub use day::ChallengeSolver;
 
 pub fn extract_integers_from_string<T: std::str::FromStr>(input: &String) -> Vec<Vec<T>> {
     input
