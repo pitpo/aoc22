@@ -11,7 +11,7 @@ use days::*;
 fn get_solver(day: &str) -> Box<dyn Day> {
     match day {
         "day1" => Box::new(day1::Day1::new(get_input_for_day(2022, 1))),
-        // "day2" => Box::new(day2::Day2::new(get_input_for_day(2022, 2))),
+        "day2" => Box::new(day2::Day2::new(get_input_for_day(2022, 2))),
         // "day3" => Box::new(day3::Day3::new(get_input_for_day(2022, 3))),
         // "day4" => Box::new(day4::Day4::new(get_input_for_day(2022, 4))),
         // "day5" => Box::new(day5::Day5::new(get_input_for_day(2022, 5))),
