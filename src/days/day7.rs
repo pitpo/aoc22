@@ -12,7 +12,6 @@ pub struct Solver {
 impl Solver {
     pub fn new(input: String) -> Solver {
         let mut cwd = String::new();
-        let mut dir_stack: Vec<String> = vec![];
         let dir_separator = String::from("/");
         let mut directory_files: HashMap<String, Vec<(String, usize)>> = HashMap::new();
         let mut directory_children: HashMap<String, Vec<String>> = HashMap::new();
@@ -26,15 +25,12 @@ impl Solver {
                     let dir = line.split_whitespace().nth(2).unwrap();
                     if dir.eq(&dir_separator) {
                         cwd = String::from(dir_separator.clone());
-                        dir_stack = vec![];
                     } else if dir.eq("..") {
                         let split_pos = cwd.rfind('/').unwrap();
                         let (result, _) = cwd.split_at(split_pos);
                         cwd = String::from(result);
-                        dir_stack.pop();
                     } else {
                         cwd = cwd.clone() + &dir_separator + &String::from(dir);
-                        dir_stack.push(cwd.clone());
                     }
                 }
             } else {
