@@ -2,6 +2,7 @@ extern crate reqwest;
 
 pub mod day;
 pub mod network;
+pub mod plane;
 
 pub use day::ChallengeSolver;
 
