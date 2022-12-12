@@ -86,23 +86,13 @@ impl ChallengeSolver for Solver {
     }
     fn get_part_b_result(&self) -> String {
         let finish_pos = self.get_pos(self.finish);
-        // bruteforce ftw
+        // so basically, 'b's are only in the second column and entire first column is filled with 'a'
+        // this quite limits the initial choice
         let starting_positions = self
             .input
             .iter()
             .enumerate()
-            .flat_map(|(i, row)| {
-                return row
-                    .iter()
-                    .enumerate()
-                    .filter_map(|(j, (height, _))| {
-                        if *height == 0 {
-                            return Some((i, j));
-                        }
-                        return None;
-                    })
-                    .collect::<Vec<(usize, usize)>>();
-            })
+            .map(|(i, _)| (i, 0))
             .collect::<Vec<(usize, usize)>>();
         let results = starting_positions
             .iter()
