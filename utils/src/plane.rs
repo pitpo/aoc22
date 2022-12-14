@@ -1,5 +1,6 @@
 #[derive(Debug)]
 pub enum Direction {
+    None,
     Up,
     Right,
     Down,
@@ -71,6 +72,9 @@ impl Boundary {
 
     pub fn move_iterator(&self, (i, j): (isize, isize), dir: &Direction) -> Option<(isize, isize)> {
         match dir {
+            Direction::None => {
+                Some((i, j))
+            }
             Direction::Down => {
                 if i == self.high_y_boundary - 1 {
                     None
