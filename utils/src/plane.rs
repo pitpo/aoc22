@@ -19,11 +19,30 @@ impl Direction {
     }
 }
 
+pub struct Coordinates {
+    x: isize,
+    y: isize,
+}
+
 pub struct Boundary {
     low_x_boundary: isize,
     low_y_boundary: isize,
     high_x_boundary: isize,
     high_y_boundary: isize,
+}
+
+impl Coordinates {
+    pub fn new(x: isize, y: isize) -> Coordinates {
+        Coordinates { x, y }
+    }
+
+    pub fn get_x(&self) -> isize {
+        self.x
+    }
+
+    pub fn get_y(&self) -> isize {
+        self.y
+    }
 }
 
 impl Boundary {
