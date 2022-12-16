@@ -14,6 +14,7 @@ struct Node {
 pub struct Solver {
     input: Vec<Node>,
     first_node: usize,
+    room_to_vec_pos_map: HashMap<usize, usize>,
 }
 
 impl Solver {
@@ -27,13 +28,15 @@ impl Solver {
                 (room_name, i)
             })
             .collect::<HashMap<String, usize>>();
-        println!("{room_name_map:#?}");
+        let mut room_to_vec_pos_map = HashMap::new();
         let mut input = input
             .lines()
-            .map(|line| {
+            .enumerate()
+            .map(|(i, line)| {
                 let mut line = line.trim().split(&[' ', '=', ',', ';']);
                 let room_name = line.nth(1).unwrap();
                 let room = *room_name_map.get(room_name).unwrap();
+                room_to_vec_pos_map.insert(room, i);
                 let flow_rate = line.nth(3).unwrap().parse::<usize>().unwrap();
                 let tunnels = line
                     .skip(5)
@@ -59,6 +62,7 @@ impl Solver {
         Solver {
             input,
             first_node: *room_name_map.get("AA").unwrap(),
+            room_to_vec_pos_map,
         }
     }
 
@@ -101,73 +105,150 @@ impl Solver {
             }
         }
     }
-
-    fn get_room(&self, name: &usize) -> &Node {
-        // i f'd up, input should've been map, but it's too late now
-        self.input.iter().find(|node| node.room == *name).unwrap()
-    }
 }
 
-#[derive(Debug)]
-struct Savepoint {
-    room: usize,
+#[derive(Copy, Clone)]
+struct Explorer<'a> {
+    room: &'a Node,
     pressure_level: usize,
     total_pressure: usize,
     time: usize,
+}
+
+struct Savepoint<'a> {
+    elf: Explorer<'a>,
+    elephant: Explorer<'a>,
     visited: HashSet<usize>,
+}
+
+impl<'a> Explorer<'a> {
+    fn new(first_room: &'a Node) -> Explorer<'a> {
+        Explorer {
+            room: first_room,
+            pressure_level: 0,
+            total_pressure: 0,
+            time: 0,
+        }
+    }
+
+    fn explore(
+        &self,
+        next_room: &'a Node,
+        time_limit: &usize,
+        visited: &HashSet<usize>,
+    ) -> Option<Explorer<'a>> {
+        if self.room.distances.contains_key(&next_room.room)
+            && self.time + self.room.distances[&next_room.room] < *time_limit
+            && !visited.contains(&next_room.room)
+        {
+            let total_pressure = self.total_pressure
+                + (1 + self.room.distances[&next_room.room]) * self.pressure_level;
+            let pressure_level = self.pressure_level + next_room.flow_rate;
+            let time = self.time + 1 + self.room.distances[&next_room.room];
+            return Some(Explorer {
+                room: next_room,
+                pressure_level,
+                total_pressure,
+                time,
+            });
+        }
+        None
+    }
 }
 
 impl ChallengeSolver for Solver {
     fn get_part_a_result(&self) -> String {
         let time_limit = 30;
+        let mut visited = HashSet::new();
+        visited.reserve(self.input[self.first_node].distances.len());
+        visited.insert(self.first_node);
+        let explorer = Explorer::new(&self.input[self.room_to_vec_pos_map[&self.first_node]]);
         let initial_state = Savepoint {
-            room: self.first_node,
-            pressure_level: 0,
-            total_pressure: 0,
-            time: 0,
-            visited: HashSet::new(),
+            elf: explorer,
+            elephant: explorer,
+            visited,
         };
-        let mut stack: Vec<Savepoint> = vec![initial_state];
-        stack.reserve(1000);
+        let mut stack = vec![initial_state];
         let mut max_possible_pressure = 0;
+        stack.reserve(10000);
         while !stack.is_empty() {
             let current_state = stack.pop().unwrap();
-            let current_room = self.get_room(&current_state.room);
-            let current_room_name = current_room.room;
             for i in 0..self.input.len() {
-                let next_room = self.input[i].room;
-                if current_room.distances.contains_key(&next_room)
-                    && current_state.time + current_room.distances[&next_room] < time_limit
-                    && !current_state.visited.contains(&next_room)
+                let next_room = &self.input[i];
+                if let Some(elf) =
+                    current_state
+                        .elf
+                        .explore(&next_room, &time_limit, &current_state.visited)
                 {
-                    let total_pressure = current_state.total_pressure
-                        + (1 + current_room.distances[&next_room]) * current_state.pressure_level;
-                    let pressure_level =
-                        current_state.pressure_level + self.get_room(&next_room).flow_rate;
-                    let time = current_state.time + 1 + current_room.distances[&next_room];
                     let mut visited = current_state.visited.clone();
-                    visited.insert(current_room_name);
+                    visited.insert(next_room.room);
                     stack.push(Savepoint {
-                        room: next_room,
-                        total_pressure,
-                        pressure_level,
-                        time,
+                        elf,
+                        elephant: current_state.elephant,
                         visited,
                     });
                     let possible_end_pressure =
-                        total_pressure + pressure_level * (time_limit - time);
+                        elf.total_pressure + elf.pressure_level * (time_limit - elf.time);
                     if possible_end_pressure > max_possible_pressure {
                         max_possible_pressure = possible_end_pressure;
                     }
                 }
             }
         }
-
         String::from(max_possible_pressure.to_string())
     }
     fn get_part_b_result(&self) -> String {
-        let result = "IMPLEMENT ME";
-        String::from(result.to_string())
+        let time_limit = 26;
+        let mut visited = HashSet::new();
+        visited.reserve(self.input[self.first_node].distances.len());
+        visited.insert(self.first_node);
+        let explorer = Explorer::new(&self.input[self.room_to_vec_pos_map[&self.first_node]]);
+        let initial_state = Savepoint {
+            elf: explorer,
+            elephant: explorer,
+            visited,
+        };
+        let mut stack = vec![initial_state];
+        let mut max_possible_pressure = 0;
+        stack.reserve(10000);
+        while !stack.is_empty() {
+            let current_state = stack.pop().unwrap();
+            for i in 0..self.input.len() {
+                let next_room = &self.input[i];
+                if let Some(elf) =
+                    current_state
+                        .elf
+                        .explore(&next_room, &time_limit, &current_state.visited)
+                {
+                    let mut visited = current_state.visited.clone();
+                    visited.insert(next_room.room);
+                    for j in 0..self.input.len() {
+                        let next_elephant_room = &self.input[j];
+                        let mut visited = visited.clone();
+                        if let Some(elephant) = current_state.elephant.explore(
+                            &next_elephant_room,
+                            &time_limit,
+                            &visited,
+                        ) {
+                            visited.insert(next_elephant_room.room);
+                            stack.push(Savepoint {
+                                elf,
+                                elephant,
+                                visited,
+                            });
+                            let possible_end_pressure = elf.total_pressure
+                                + elf.pressure_level * (time_limit - elf.time)
+                                + elephant.total_pressure
+                                + elephant.pressure_level * (time_limit - elephant.time);
+                            if possible_end_pressure > max_possible_pressure {
+                                max_possible_pressure = possible_end_pressure;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        String::from(max_possible_pressure.to_string())
     }
 }
 
