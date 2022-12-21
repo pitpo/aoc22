@@ -28,7 +28,7 @@ fn get_solver(day: &str) -> Box<dyn ChallengeSolver> {
         "day16" => Box::new(day16::Solver::new(get_input_for_day(2022, 16))),
         "day17" => Box::new(day17::Solver::new(get_input_for_day(2022, 17))),
         "day18" => Box::new(day18::Solver::new(get_input_for_day(2022, 18))),
-        // "day19" => Box::new(day19::Solver::new(get_input_for_day(2022, 19))),
+        "day19" => Box::new(day19::Solver::new(get_input_for_day(2022, 19))),
         "day20" => Box::new(day20::Solver::new(get_input_for_day(2022, 20))),
         "day21" => Box::new(day21::Solver::new(get_input_for_day(2022, 21))),
         // "day22" => Box::new(day22::Solver::new(get_input_for_day(2022, 22))),
