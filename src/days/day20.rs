@@ -51,7 +51,7 @@ impl Solver {
             if split_point + shift == 0 {
                 list.push_back(item);
             } else {
-                // dear diary, today   \/   comprasion was a dick (i was checking '>' instead of '>=')
+                // dear diary, today   \/   comparison was a dick (i was checking '>' instead of '>=')
                 if split_point + shift >= self.input.len() {
                     append_point += 1;
                 }
