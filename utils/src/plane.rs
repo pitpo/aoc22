@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Direction {
     None,
     Up,
@@ -16,6 +16,27 @@ impl Direction {
             Direction::Left,
         ];
         &DIRECTIONS
+    }
+
+    pub fn rotate(&self, dir: &Direction) -> Direction {
+        if dir == &Direction::Right {
+            return match self {
+                &Direction::None => Direction::None,
+                &Direction::Up => Direction::Right,
+                &Direction::Right => Direction::Down,
+                &Direction::Down => Direction::Left,
+                &Direction::Left => Direction::Up,
+            };
+        } else if dir == &Direction::Left {
+            return match self {
+                &Direction::None => Direction::None,
+                &Direction::Up => Direction::Left,
+                &Direction::Left => Direction::Down,
+                &Direction::Down => Direction::Right,
+                &Direction::Right => Direction::Up,
+            };
+        }
+        *self
     }
 }
 
@@ -91,9 +112,7 @@ impl Boundary {
 
     pub fn move_iterator(&self, (i, j): (isize, isize), dir: &Direction) -> Option<(isize, isize)> {
         match dir {
-            Direction::None => {
-                Some((i, j))
-            }
+            Direction::None => Some((i, j)),
             Direction::Down => {
                 if i == self.high_y_boundary - 1 {
                     None
@@ -122,6 +141,16 @@ impl Boundary {
                     Some((i - 1, j))
                 }
             }
+        }
+    }
+
+    pub fn wrap_array_iterator(&self, (i, j): (usize, usize), dir: &Direction) -> (usize, usize) {
+        match dir {
+            Direction::None => (i, j),
+            Direction::Down => (0, j),
+            Direction::Right => (i, 0),
+            Direction::Left => (i, self.high_x_boundary as usize - 1),
+            Direction::Up => (self.high_y_boundary as usize - 1, j),
         }
     }
 }
