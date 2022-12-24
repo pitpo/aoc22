@@ -114,28 +114,28 @@ impl Boundary {
         match dir {
             Direction::None => Some((i, j)),
             Direction::Down => {
-                if i == self.high_y_boundary - 1 {
+                if i >= self.high_y_boundary - 1 {
                     None
                 } else {
                     Some((i + 1, j))
                 }
             }
             Direction::Right => {
-                if j == self.high_x_boundary - 1 {
+                if j >= self.high_x_boundary - 1 || i < self.low_y_boundary || i >= self.high_y_boundary {
                     None
                 } else {
                     Some((i, j + 1))
                 }
             }
             Direction::Left => {
-                if j == self.low_x_boundary {
+                if j <= self.low_x_boundary || i < self.low_y_boundary || i >= self.high_y_boundary {
                     None
                 } else {
                     Some((i, j - 1))
                 }
             }
             Direction::Up => {
-                if i == self.low_y_boundary {
+                if i <= self.low_y_boundary {
                     None
                 } else {
                     Some((i - 1, j))

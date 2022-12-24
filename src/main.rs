@@ -33,7 +33,7 @@ fn get_solver(day: &str) -> Box<dyn ChallengeSolver> {
         "day21" => Box::new(day21::Solver::new(get_input_for_day(2022, 21))),
         "day22" => Box::new(day22::Solver::new(get_input_for_day(2022, 22))),
         "day23" => Box::new(day23::Solver::new(get_input_for_day(2022, 23))),
-        // "day24" => Box::new(day24::Solver::new(get_input_for_day(2022, 24))),
+        "day24" => Box::new(day24::Solver::new(get_input_for_day(2022, 24))),
         // "day25" => Box::new(day25::Solver::new(get_input_for_day(2022, 25))),
         _ => panic!("Unknown or missing argument")
     }
